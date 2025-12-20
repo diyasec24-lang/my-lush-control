@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Control Panel</title>
+  <style>
+    body { background: #121212; color: white; text-align: center; font-family: sans-serif; padding: 50px; }
+    .btn { background: #ff4757; border: none; padding: 20px 40px; color: white; font-size: 20px; border-radius: 50px; cursor: pointer; transition: 0.3s; }
+    .btn:active { transform: scale(0.9); background: #ff6b81; }
+  </style>
+</head>
+<body>
+  <h1>وحدة التحكم</h1>
+  <button class="btn" id="trigger">إرسال نبضة اهتزاز</button>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    document.getElementById('trigger').onclick = () => {
+      socket.emit('vibrate-action', { power: 100 });
+    };
+  </script>
+</body>
+</html>
