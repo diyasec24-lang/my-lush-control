@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>محاكي Lovense • صفحتان منفصلتان</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&amp;family=Noto+Sans+Arabic:wght@400;500;700&amp;display=swap');
+        
+        body {
+            font-family: 'Noto Sans Arabic', 'Inter', system-ui, sans-serif;
+        }
+        
+        .neon-glow {
+            box-shadow: 0 0 25px rgb(236 72 153 / 0.6),
+                        0 0 50px rgb(236 72 153 / 0.3);
+        }
+        
+        .vibration-knob {
+            width: 92px;
+            height: 92px;
+            background: radial-gradient(circle at 40% 30%, #fff, #fda4af, #e11d48);
+            border: 6px solid #fff;
+            box-shadow: 0 0 35px #fda4af,
+                        0 10px 25px rgb(225 29 72 / 0.5),
+                        inset 0 8px 15px rgba(255,255,255,0.9),
+                        inset 0 -8px 20px rgba(225, 29, 72, 0.6);
+            transition: box-shadow 0.1s ease;
+            cursor: grab;
+            user-select: none;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 9999px;
+            z-index: 20;
+        }
+        
+        .vibration-knob:active {
+            cursor: grabbing;
+            box-shadow: 0 0 45px #fda4af,
+                        0 0 70px #e11d48;
+        }
+        
+        .vibration-knob.vibrating {
+            animation: knob-vibrate 0.08s infinite linear;
+        }
+        
+        @keyframes knob-vibrate {
+            0% { transform: translateX(-50%) translate(0, 0); }
+            25% { transform: translateX(-50%) translate(1.5px, -1px); }
+            50% { transform: translateX(-50%) translate(-1px, 1.5px); }
+            75% { transform: translateX(-50%) translate(1px, -1.5px); }
+            100% { transform: translateX(-50%) translate(0, 0); }
+        }
+        
+        .track {
+            background: linear-gradient(to bottom, #fda4af, #e11d48, #9f1239);
+            box-shadow: inset 0 0 20px rgb(0 0 0 / 0.6);
+        }
+        
+        .waveform-glow {
+            filter: drop-shadow(0 0 12px #ec4899);
+        }
+        
+        .lovense-pink {
+            color: #ec4899;
+        }
+        
+        .section-header {
+            font-size: 1.35rem;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+        }
+        
+        .metric-big {
+            font-size: 3.8rem;
+            line-height: 1;
+            font-weight: 800;
+            font-variant-numeric: tabular-nums;
+        }
+    </style>
+</head>
+<body class="bg-zinc-950 text-white">
+    <!-- Top Navigation -->
+    <nav class="border-b border-zinc-800 bg-zinc-900/90 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-screen-xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-x-4">
+                <div class="flex items-center gap-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-pink-500 via-rose-500 to-violet-500 rounded-2xl flex items-center justify-center shadow-lg shadow-pink-900/50">
+                        <i class="fa-solid fa-heart-pulse text-white text-2xl"></i>
+                    </div>
+                    <div>
+                        <span class="font-bold text-2xl tracking-tighter">Lovense</span>
+                        <span class="text-xs text-zinc-500 block -mt-1">REMOTE 2026</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-x-2">
+                <div onclick="showRoleSwitcher()" 
+                     class="flex items-center gap-x-2 px-4 py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 rounded-2xl text-sm cursor-pointer transition-colors">
+                    <i class="fa-solid fa-sync-alt text-pink-400"></i>
+                    <span class="font-medium">تبديل الصفحة</span>
+                </div>
+                
+                <div class="px-3 py-1 bg-zinc-800 text-xs rounded-2xl flex items-center gap-x-1.5 text-zinc-400">
+                    <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+                    <span>محاكاة مباشرة</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- LANDING / ROLE CHOOSER -->
+    <div id="landing-screen" class="max-w-screen-xl mx-auto px-6 pt-16 pb-12">
+        <div class="text-center mb-12">
+            <h1 class="text-6xl font-extrabold tracking-tighter mb-3">محاكي التحكم عن بعد</h1>
+            <p class="text-2xl text-zinc-400 max-w-md mx-auto">صفحتان منفصلتان • تحكم دائري حر بالاهتزاز</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <!-- Receiver Card -->
+            <div onclick="switchToRole('receiver')" 
+                 class="group bg-zinc-900 border border-zinc-700 hover:border-pink-500/70 rounded-3xl p-9 cursor-pointer transition-all hover:-translate-y-1 shadow-xl">
+                <div class="flex justify-between items-start mb-8">
+                    <div>
+                        <div class="inline-flex items-center gap-x-2 px-4 py-1 bg-pink-900/30 text-pink-400 rounded-2xl text-sm font-medium mb-4">
+                            <i class="fa-solid fa-link"></i>
+                            <span>المتلقي</span>
+                        </div>
+                        <h3 class="text-3xl font-bold tracking-tight">صفحة المتلقي</h3>
+                        <p class="text-zinc-400 mt-2">ينشئ الرابط ويحدد مدة الجلسة</p>
+                    </div>
+                    <i class="fa-solid fa-headset text-6xl text-pink-400/70 group-hover:text-pink-400 transition-colors"></i>
+                </div>
+                
+                <div class="space-y-3 text-sm">
+                    <div class="flex items-center gap-x-3 text-zinc-400">
+                        <i class="fa-solid fa-check w-5 text-emerald-400"></i>
+                        <span>تحديد مدة التحكم (5-30 دقيقة)</span>
+                    </div>
+                    <div class="flex items-center gap-x-3 text-zinc-400">
+                        <i class="fa-solid fa-check w-5 text-emerald-400"></i>
+                        <span>إنشاء رابط فريد للمتحكم</span>
+                    </div>
+                    <div class="flex items-center gap-x-3 text-zinc-400">
+                        <i class="fa-solid fa-check w-5 text-emerald-400"></i>
+                        <span>مشاهدة النبضات والوقت المتبقي</span>
+                    </div>
+                </div>
+                
+                <div class="mt-8 pt-6 border-t border-zinc-700 text-pink-400 font-semibold flex items-center gap-x-2 group-hover:gap-x-3 transition-all">
+                    <span>افتح صفحة المتلقي</span>
+                    <i class="fa-solid fa-arrow-left"></i>
+                </div>
+            </div>
+            
+            <!-- Controller Card -->
+            <div onclick="switchToRole('controller')" 
+                 class="group bg-zinc-900 border border-zinc-700 hover:border-violet-500/70 rounded-3xl p-9 cursor-pointer transition-all hover:-translate-y-1 shadow-xl">
+                <div class="flex justify-between items-start mb-8">
+                    <div>
+                        <div class="inline-flex items-center gap-x-2 px-4 py-1 bg-violet-900/30 text-violet-400 rounded-2xl text-sm font-medium mb-4">
+                            <i class="fa-solid fa-gamepad"></i>
+                            <span>المتحكم</span>
+                        </div>
+                        <h3 class="text-3xl font-bold tracking-tight">صفحة المتحكم</h3>
+                        <p class="text-zinc-400 mt-2">يتحكم بالاهتزاز عبر الدائرة الحرة</p>
+                    </div>
+                    <i class="fa-solid fa-hand-paper text-6xl text-violet-400/70 group-hover:text-violet-400 transition-colors"></i>
+                </div>
+                
+                <div class="space-y-3 text-sm">
+                    <div class="flex items-center gap-x-3 text-zinc-400">
+                        <i class="fa-solid fa-check w-5 text-emerald-400"></i>
+                        <span>دائرة اهتزاز قابلة للسحب لأعلى/أسفل</span>
+                    </div>
+                    <div class="flex items-center gap-x-3 text-zinc-400">
+                        <i class="fa-solid fa-check w-5 text-emerald-400"></i>
+                        <span>تحكم فوري في الشدة (0-100%)</span>
+                    </div>
+                    <div class="flex items-center gap-x-3 text-zinc-400">
+                        <i class="fa-solid fa-check w-5 text-emerald-400"></i>
+                        <span>شكل النبضات يتفاعل مع حركتك</span>
+                    </div>
+                </div>
+                
+                <div class="mt-8 pt-6 border-t border-zinc-700 text-violet-400 font-semibold flex items-center gap-x-2 group-hover:gap-x-3 transition-all">
+                    <span>افتح صفحة المتحكم</span>
+                    <i class="fa-solid fa-arrow-left"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center mt-10 text-xs text-zinc-500">
+            افتح الصفحتين في علامتي تبويب منفصلتين لتجربة التحكم الكاملة
+        </div>
+    </div>
+
+    <!-- RECEIVER UI -->
+    <div id="receiver-ui" class="max-w-screen-xl mx-auto px-6 pb-16 hidden">
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <div class="flex items-center gap-x-4">
+                    <div class="px-5 py-2 bg-pink-500/10 text-pink-400 rounded-2xl text-sm font-semibold flex items-center gap-x-2">
+                        <i class="fa-solid fa-headset"></i>
+                        <span>صفحة المتلقي</span>
+                    </div>
+                    <h2 class="section-header">إنشاء جلسة التحكم</h2>
+                </div>
+                <p class="text-zinc-400 mt-1">حدد المدة ثم أنشئ الرابط لإرساله للمتحكم</p>
+            </div>
+            
+            <div id="receiver-status-badge" 
+                 class="px-5 py-2 bg-emerald-900/30 text-emerald-400 text-sm font-medium rounded-2xl flex items-center gap-x-2 border border-emerald-800">
+                <i class="fa-solid fa-wifi"></i>
+                <span>جاهز للإنشاء</span>
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- Duration & Create -->
+            <div class="lg:col-span-5 bg-zinc-900 border border-zinc-700 rounded-3xl p-8">
+                <div class="mb-6">
+                    <label class="block text-sm font-semibold text-zinc-300 mb-4">مدة الجلسة</label>
+                    <div class="grid grid-cols-4 gap-3" id="duration-buttons-receiver">
+                        <button onclick="selectDuration(5)" class="duration-btn py-4 px-3 bg-zinc-800 hover:bg-zinc-700 border border-zinc-600 rounded-2xl text-sm font-medium flex flex-col items-center transition-all" data-min="5">
+                            <span class="font-mono text-3xl font-bold">5</span>
+                            <span class="text-[10px] text-zinc-400">دقيقة</span>
+                        </button>
+                        <button onclick="selectDuration(10)" class="duration-btn py-4 px-3 bg-zinc-800 hover:bg-zinc-700 border border-zinc-600 rounded-2xl text-sm font-medium flex flex-col items-center transition-all active" data-min="10">
+                            <span class="font-mono text-3xl font-bold">10</span>
+                            <span class="text-[10px] text-zinc-400">دقيقة</span>
+                        </button>
+                        <button onclick="selectDuration(15)" class="duration-btn py-4 px-3 bg-zinc-800 hover:bg-zinc-700 border border-zinc-600 rounded-2xl text-sm font-medium flex flex-col items-center transition-all" data-min="15">
+                            <span class="font-mono text-3xl font-bold">15</span>
+                            <span class="text-[10px] text-zinc-400">دقيقة</span>
+                        </button>
+                        <button onclick="selectDuration(30)" class="duration-btn py-4 px-3 bg-zinc-800 hover:bg-zinc-700 border border-zinc-600 rounded-2xl text-sm font-medium flex flex-col items-center transition-all" data-min="30">
+                            <span class="font-mono text-3xl font-bold">30</span>
+                            <span class="text-[10px] text-zinc-400">دقيقة</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <button onclick="createSessionAsReceiver()" 
+                        id="create-session-btn"
+                        class="w-full py-4 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 transition-all rounded-2xl font-bold text-lg flex items-center justify-center gap-x-3 shadow-lg shadow-pink-900/40">
+                    <i class="fa-solid fa-link mr-2"></i>
+                    <span>إنشاء الرابط وبدء الجلسة</span>
+                </button>
+                
+                <div id="receiver-link-section" class="hidden mt-6">
+                    <div class="text-xs font-semibold text-zinc-400 mb-2 flex items-center gap-x-2">
+                        <i class="fa-solid fa-share-alt"></i>
+                        <span>رابط التحكم (أرسله للمتحكم)</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <input id="receiver-share-link" type="text" readonly 
+                               class="flex-1 bg-zinc-950 border border-zinc-700 text-xs px-4 py-3 rounded-2xl font-mono">
+                        <button onclick="copyReceiverLink()" 
+                                class="px-5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-2xl text-sm font-medium flex items-center gap-x-2">
+                            <i class="fa-solid fa-copy"></i>
+                        </button>
+                    </div>
+                    <p class="text-[10px] text-emerald-400 mt-2 flex items-center gap-x-1">
+                        <i class="fa-solid fa-check-circle"></i> 
+                        <span>الرابط صالح حتى انتهاء المدة</span>
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Live Preview -->
+            <div class="lg:col-span-7 bg-zinc-900 border border-zinc-700 rounded-3xl p-8">
+                <div class="flex items-center justify-between mb-5">
+                    <div class="font-semibold flex items-center gap-x-2">
+                        <i class="fa-solid fa-chart-line text-pink-400"></i>
+                        <span>معاينة النبضات</span>
+                    </div>
+                    <div id="receiver-countdown" class="font-mono text-3xl font-bold text-white countdown">00:00</div>
+                </div>
+                
+                <canvas id="receiver-canvas" width="620" height="170" class="w-full rounded-2xl border border-zinc-700"></canvas>
+                
+                <div class="flex justify-between text-xs text-zinc-500 mt-3 px-1">
+                    <div>الشدة الحالية: <span id="receiver-intensity-live" class="font-mono text-pink-400">0</span>%</div>
+                    <div>في انتظار المتحكم...</div>
+                </div>
+            </div>
+            
+        </div>
+        
+        <div class="mt-6 text-center">
+            <div onclick="switchToRole('controller')" class="inline-flex items-center text-xs text-zinc-400 hover:text-zinc-200 cursor-pointer">
+                <span>هل أنت المتحكم؟ افتح صفحة التحكم</span>
+                <i class="fa-solid fa-external-link-alt ml-2 text-xs"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTROLLER UI -->
+    <div id="controller-ui" class="max-w-screen-xl mx-auto px-6 pb-16 hidden">
+        <div class="flex items-center justify-between mb-6">
+            <div>
+                <div class="flex items-center gap-x-4">
+                    <div class="px-5 py-2 bg-violet-500/10 text-violet-400 rounded-2xl text-sm font-semibold flex items-center gap-x-2">
+                        <i class="fa-solid fa-gamepad"></i>
+                        <span>صفحة المتحكم</span>
+                    </div>
+                    <h2 class="section-header">التحكم بالاهتزاز</h2>
+                </div>
+                <p class="text-zinc-400 text-sm mt-1">اسحب الدائرة لأعلى أو لأسفل لتغيير شدة الاهتزاز</p>
+            </div>
+            
+            <div id="controller-status-badge" 
+                 class="px-5 py-2 bg-zinc-800 text-zinc-400 text-sm font-medium rounded-2xl flex items-center gap-x-2 border border-zinc-700">
+                <i class="fa-solid fa-plug"></i>
+                <span>غير متصل</span>
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- BIG VIBRATION CIRCLE CONTROL -->
+            <div class="lg:col-span-5 bg-zinc-900 border border-zinc-700 rounded-3xl p-8 flex flex-col">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <div class="font-bold text-lg">دائرة الاهتزاز الحرة</div>
+                        <div class="text-xs text-zinc-400">اسحبها لأعلى = شدة أعلى</div>
+                    </div>
+                    <div class="text-right">
+                        <div id="controller-intensity-big" class="metric-big text-white font-extrabold tabular-nums">0</div>
+                        <div class="text-xs -mt-1 text-zinc-400">شدة %</div>
+                    </div>
+                </div>
+                
+                <!-- Draggable Circle Area -->
+                <div id="vibration-track" 
+                     class="relative flex-1 min-h-[380px] bg-zinc-950 border border-zinc-700 rounded-3xl mt-3 overflow-hidden flex items-center justify-center cursor-crosshair"
+                     style="background: linear-gradient(#27272a, #18181b);">
+                    
+                    <!-- Vertical Track Line -->
+                    <div class="absolute left-1/2 top-8 bottom-8 w-1 bg-gradient-to-b from-pink-400 via-rose-500 to-violet-500 rounded-full transform -translate-x-1/2"></div>
+                    
+                    <!-- Draggable Knob -->
+                    <div id="vibration-knob"
+                         class="vibration-knob shadow-2xl"
+                         style="top: 70%;"
+                         onmousedown="startDrag(event)"
+                         ontouchstart="startDrag(event)">
+                        
+                        <!-- Inner content -->
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div class="w-9 h-9 bg-white/90 rounded-full flex items-center justify-center">
+                                <i class="fa-solid fa-broadcast-tower text-rose-600 text-xl"></i>
+                            </div>
+                        </div>
+                        
+                        <!-- Pulse rings -->
+                        <div id="knob-pulse-ring" class="absolute inset-0 rounded-full border border-white/40 pointer-events-none"></div>
+                    </div>
+                    
+                    <!-- Top label -->
+                    <div class="absolute top-4 right-6 text-xs font-bold text-pink-400 flex items-center gap-x-1">
+                        <span>أقصى</span> <i class="fa-solid fa-arrow-up text-xs"></i>
+                    </div>
+                    <!-- Bottom label -->
+                    <div class="absolute bottom-4 right-6 text-xs font-bold text-zinc-400 flex items-center gap-x-1">
+                        <span>صفر</span> <i class="fa-solid fa-arrow-down text-xs"></i>
+                    </div>
+                </div>
+                
+                <div class="mt-4 text-center text-xs text-zinc-400">
+                    حرّك الدائرة للتحكم الفوري في الاهتزاز
+                </div>
+            </div>
+            
+            <!-- Right side: Waveform + Info -->
+            <div class="lg:col-span-7 space-y-6">
+                
+                <!-- Live Waveform -->
+                <div class="bg-zinc-900 border border-zinc-700 rounded-3xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="font-semibold flex items-center gap-x-2">
+                            <i class="fa-solid fa-chart-line text-violet-400"></i>
+                            <span>شكل النبضات الحية</span>
+                        </div>
+                        <div id="controller-countdown" class="font-mono text-4xl font-extrabold text-white countdown">00:00</div>
+                    </div>
+                    
+                    <canvas id="controller-canvas" width="620" height="160" class="w-full rounded-2xl border border-zinc-700"></canvas>
+                </div>
+                
+                <!-- Quick Pattern + Status -->
+                <div class="bg-zinc-900 border border-zinc-700 rounded-3xl p-6">
+                    <div class="font-semibold text-sm mb-4">نوع النبضة (اختياري)</div>
+                    
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="setPattern('wave')" class="pattern-btn px-5 py-2 text-xs bg-zinc-800 hover:bg-zinc-700 border border-zinc-600 rounded-2xl flex items-center gap-x-2 active" id="pattern-wave-c">
+                            <i class="fa-solid fa-water"></i> <span>موجة</span>
+                        </button>
+                        <button onclick="setPattern('pulse')" class="pattern-btn px-5 py-2 text-xs bg-zinc-800 hover:bg-zinc-700 border border-zinc-600 rounded-2xl flex items-center gap-x-2" id="pattern-pulse-c">
+                            <i class="fa-solid fa-bolt"></i> <span>نبض</span>
+                        </button>
+                        <button onclick="setPattern('constant')" class="pattern-btn px-5 py-2 text-xs bg-zinc-800 hover:bg-zinc-700 border border-zinc-600 rounded-2xl flex items-center gap-x-2" id="pattern-constant-c">
+                            <i class="fa-solid fa-minus"></i> <span>ثابت</span>
+                        </button>
+                        <button onclick="setPattern('tease')" class="pattern-btn px-5 py-2 text-xs bg-zinc-800 hover:bg-zinc-700 border border-zinc-600 rounded-2xl flex items-center gap-x-2" id="pattern-tease-c">
+                            <i class="fa-solid fa-chart-line"></i> <span>إثارة</span>
+                        </button>
+                        <button onclick="setPattern('random')" class="pattern-btn px-5 py-2 text-xs bg-zinc-800 hover:bg-zinc-700 border border-zinc-600 rounded-2xl flex items-center gap-x-2" id="pattern-random-c">
+                            <i class="fa-solid fa-random"></i> <span>عشوائي</span>
+                        </button>
+                    </div>
+                    
+                    <div class="mt-5 pt-5 border-t border-zinc-700 flex items-center justify-between text-xs">
+                        <div class="flex items-center gap-x-2 text-emerald-400">
+                            <i class="fa-solid fa-check-double"></i>
+                            <span id="connection-text">متصل بالمتلقي</span>
+                        </div>
+                        <div class="text-zinc-400">التغييرات تنتقل فوراً</div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <footer class="text-center py-8 text-xs text-zinc-500 border-t border-zinc-800">
+        محاكي Lovense • الصفحتان منفصلتان • الدائرة الحرة للتحكم بالاهتزاز • غير مرتبط رسمياً بـ Lovense
+    </footer>
+
+    <script>
+        // Tailwind + Globals
+        let currentRole = null;
+        let currentSession = null;
+        let broadcastChannel = null;
+        let animationFrame = null;
+        let isDragging = false;
+        let currentIntensity = 0;
+        let currentPattern = 'wave';
+        let currentSpeed = 5.0;
+        let selectedDuration = 10;
+
+        function initTailwind() {
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        fontFamily: {
+                            'arabic': ['Noto Sans Arabic', 'Inter', 'system-ui', 'sans-serif']
+                        }
+                    }
+                }
+            };
+        }
+
+        function initBroadcast() {
+            if (typeof BroadcastChannel !== 'undefined') {
+                broadcastChannel = new BroadcastChannel('lovense-separate-2026');
+                
+                broadcastChannel.onmessage = (event) => {
+                    const data = event.data;
+                    if (!data || !currentSession) return;
+                    
+                    if (data.sessionId && currentSession.id !== data.sessionId) return;
+                    
+                    if (data.type === 'intensity-update' && currentRole === 'receiver') {
+                        currentIntensity = data.intensity;
+                        document.getElementById('receiver-intensity-live').textContent = Math.round(currentIntensity);
+                        
+                        // Update waveform amplitude live
+                        if (currentSession) {
+                            currentSession.pattern.intensity = currentIntensity;
+                        }
+                    }
+                    
+                    if (data.type === 'pattern-update' && currentRole === 'receiver') {
+                        currentPattern = data.pattern;
+                        if (currentSession) currentSession.pattern.type = data.pattern;
+                    }
+                    
+                    if (data.type === 'session-created' && currentRole === 'controller') {
+                        // Auto connect if we have the session
+                        if (!currentSession) {
+                            currentSession = {
+                                id: data.sessionId,
+                                endTime: data.endTime,
+                                pattern: data.pattern || { type: 'wave', intensity: 0, speed: 5 }
+                            };
+                            connectControllerToSession();
+                        }
+                    }
+                    
+                    if (data.type === 'session-end') {
+                        endEverything();
+                    }
+                };
+            }
+        }
+
+        // ========== ROLE SWITCHING ==========
+        function switchToRole(role) {
+            currentRole = role;
+            
+            document.getElementById('landing-screen').classList.add('hidden');
+            document.getElementById('receiver-ui').classList.add('hidden');
+            document.getElementById('controller-ui').classList.add('hidden');
+            
+            if (role === 'receiver') {
+                document.getElementById('receiver-ui').classList.remove('hidden');
+                initReceiverUI();
+            } else {
+                document.getElementById('controller-ui').classList.remove('hidden');
+                initControllerUI();
+            }
+            
+            // Check URL for existing session
+            checkURLSession();
+        }
+        
+        function showRoleSwitcher() {
+            document.getElementById('landing-screen').classList.remove('hidden');
+            document.getElementById('receiver-ui').classList.add('hidden');
+            document.getElementById('controller-ui').classList.add('hidden');
+            currentRole = null;
+        }
+        
+        function initReceiverUI() {
+            // Set default duration
+            selectDuration(10);
+            
+            // Clear any previous
+            document.getElementById('receiver-link-section').classList.add('hidden');
+            document.getElementById('create-session-btn').classList.remove('hidden');
+            
+            // Start with zero intensity preview
+            document.getElementById('receiver-intensity-live').textContent = '0';
+            
+            // Start a gentle preview animation
+            startReceiverPreviewAnimation();
+        }
+        
+        function initControllerUI() {
+            // Reset knob position to bottom (0%)
+            const knob = document.getElementById('vibration-knob');
+            knob.style.top = '70%';
+            currentIntensity = 0;
+            document.getElementById('controller-intensity-big').textContent = '0';
+            
+            // Make sure pattern buttons are ready
+            document.querySelectorAll('.pattern-btn').forEach(b => b.classList.remove('!bg-violet-600', 'border-violet-500'));
+            document.getElementById('pattern-wave-c').classList.add('!bg-violet-600', 'border-violet-500');
+            
+            // If already has session in URL, try connect
+            checkURLSession();
+        }
+        
+        function checkURLSession() {
+            const params = new URLSearchParams(window.location.search);
+            const sessionId = params.get('session');
+            const roleParam = params.get('role');
+            
+            if (sessionId && roleParam === 'controller' && currentRole === 'controller') {
+                // Auto connect as controller
+                currentSession = { id: sessionId, endTime: Date.now() + 600000, pattern: {type: 'wave', intensity: 0, speed: 5} };
+                connectControllerToSession();
+            }
+            
+            if (sessionId && roleParam === 'receiver' && currentRole === 'receiver') {
+                // Receiver opened its own link? Just show it
+                console.log('Receiver viewing own session link');
+            }
+        }
+        
+        // ========== RECEIVER FUNCTIONS ==========
+        function selectDuration(minutes) {
+            selectedDuration = minutes;
+            
+            document.querySelectorAll('#duration-buttons-receiver .duration-btn').forEach(btn => {
+                btn.classList.remove('!bg-pink-600', '!border-pink-500', 'shadow-pink-900/50');
+                if (parseInt(btn.dataset.min) === minutes) {
+                    btn.classList.add('!bg-pink-600', '!border-pink-500', 'shadow-pink-900/50');
+                }
+            });
+        }
+        
+        function createSessionAsReceiver() {
+            const sessionId = 'lov_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 7);
+            const endTime = Date.now() + (selectedDuration * 60 * 1000);
+            
+            currentSession = {
+                id: sessionId,
+                endTime: endTime,
+                pattern: {
+                    type: currentPattern || 'wave',
+                    intensity: 0,
+                    speed: 5.0
+                }
+            };
+            
+            // Show link
+            const baseUrl = window.location.href.split('?')[0];
+            const shareUrl = `${baseUrl}?role=controller&session=${sessionId}`;
+            
+            document.getElementById('receiver-share-link').value = shareUrl;
+            document.getElementById('receiver-link-section').classList.remove('hidden');
+            document.getElementById('create-session-btn').classList.add('hidden');
+            
+            // Update status
+            document.getElementById('receiver-status-badge').innerHTML = `
+                <i class="fa-solid fa-broadcast-tower"></i>
+                <span>جلسة نشطة • في انتظار المتحكم</span>
+            `;
+            document.getElementById('receiver-status-badge').className = 'px-5 py-2 bg-pink-900/30 text-pink-400 text-sm font-medium rounded-2xl flex items-center gap-x-2 border border-pink-800';
+            
+            // Broadcast session created
+            if (broadcastChannel) {
+                broadcastChannel.postMessage({
+                    type: 'session-created',
+                    sessionId: sessionId,
+                    endTime: endTime,
+                    pattern: currentSession.pattern
+                });
+            }
+            
+            // Start countdown
+            startReceiverCountdown();
+            
+            // Save
+            localStorage.setItem('lovenseReceiverSession', JSON.stringify(currentSession));
+            
+            // Start waveform with 0 intensity
+            startWaveformAnimation('receiver');
+        }
+        
+        function copyReceiverLink() {
+            const input = document.getElementById('receiver-share-link');
+            input.select();
+            document.execCommand('copy');
+            
+            const orig = input.value;
+            input.value = '✓ تم النسخ';
+            setTimeout(() => { input.value = orig; }, 1600);
+        }
+        
+        function startReceiverCountdown() {
+            const el = document.getElementById('receiver-countdown');
+            const interval = setInterval(() => {
+                if (!currentSession) {
+                    clearInterval(interval);
+                    return;
+                }
+                const rem = Math.max(0, currentSession.endTime - Date.now());
+                const m = Math.floor(rem / 60000);
+                const s = Math.floor((rem % 60000) / 1000);
+                el.textContent = `${m}:${s.toString().padStart(2,'0')}`;
+                
+                if (rem <= 0) {
+                    clearInterval(interval);
+                    endEverything();
+                }
+            }, 300);
+        }
+        
+        function startReceiverPreviewAnimation() {
+            // Gentle preview when not connected
+            const canvas = document.getElementById('receiver-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            
+            let t = 0;
+            const previewLoop = setInterval(() => {
+                if (currentSession || !document.getElementById('receiver-ui').classList.contains('hidden')) {
+                    // If session started or UI hidden, stop preview
+                    if (currentSession) {
+                        clearInterval(previewLoop);
+                        return;
+                    }
+                }
+                
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = '#18181b';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Soft sine preview
+                ctx.strokeStyle = '#fda4af';
+                ctx.lineWidth = 2.5;
+                ctx.shadowBlur = 8;
+                ctx.shadowColor = '#fda4af';
+                
+                ctx.beginPath();
+                for (let x = 0; x < canvas.width; x += 2) {
+                    const y = canvas.height/2 + Math.sin((x/canvas.width)*Math.PI*3 + t*0.04) * 22;
+                    if (x === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+                ctx.shadowBlur = 0;
+                
+                t++;
+            }, 80);
+        }
+        
+        // ========== CONTROLLER FUNCTIONS ==========
+        function connectControllerToSession() {
+            if (!currentSession) return;
+            
+            document.getElementById('controller-status-badge').innerHTML = `
+                <i class="fa-solid fa-check-circle text-emerald-400"></i>
+                <span class="text-emerald-400">متصل بالمتلقي</span>
+            `;
+            document.getElementById('controller-status-badge').className = 'px-5 py-2 bg-emerald-900/30 text-emerald-400 text-sm font-medium rounded-2xl flex items-center gap-x-2 border border-emerald-800';
+            
+            document.getElementById('connection-text').innerHTML = 'متصل بالمتلقي ✓';
+            
+            // Start countdown
+            startControllerCountdown();
+            
+            // Start waveform
+            startWaveformAnimation('controller');
+            
+            // Set initial intensity from session if any
+            if (currentSession.pattern && currentSession.pattern.intensity) {
+                currentIntensity = currentSession.pattern.intensity;
+                updateKnobPosition();
+            }
+            
+            // Broadcast that we joined (optional)
+            if (broadcastChannel) {
+                broadcastChannel.postMessage({
+                    type: 'controller-joined',
+                    sessionId: currentSession.id
+                });
+            }
+        }
+        
+        function startControllerCountdown() {
+            const el = document.getElementById('controller-countdown');
+            const interval = setInterval(() => {
+                if (!currentSession) {
+                    clearInterval(interval);
+                    return;
+                }
+                const rem = Math.max(0, currentSession.endTime - Date.now());
+                const m = Math.floor(rem / 60000);
+                const s = Math.floor((rem % 60000) / 1000);
+                el.textContent = `${m}:${s.toString().padStart(2,'0')}`;
+                
+                if (rem <= 0) {
+                    clearInterval(interval);
+                    endEverything();
+                }
+            }, 300);
+        }
+        
+        // ========== DRAGGABLE CIRCLE ==========
+        let dragStartY = 0;
+        let knobStartTop = 0;
+        
+        function startDrag(e) {
+            if (!currentSession) {
+                alert('يجب الاتصال بجلسة أولاً (افتح الرابط من المتلقي)');
+                return;
+            }
+            
+            isDragging = true;
+            const knob = document.getElementById('vibration-knob');
+            const track = document.getElementById('vibration-track');
+            
+            const rect = track.getBoundingClientRect();
+            const knobRect = knob.getBoundingClientRect();
+            
+            dragStartY = e.touches ? e.touches[0].clientY : e.clientY;
+            knobStartTop = knobRect.top - rect.top;
+            
+            document.addEventListener('mousemove', onDragMove);
+            document.addEventListener('mouseup', endDrag);
+            document.addEventListener('touchmove', onDragMove, {passive: false});
+            document.addEventListener('touchend', endDrag);
+            
+            e.preventDefault();
+        }
+        
+        function onDragMove(e) {
+            if (!isDragging) return;
+            
+            const knob = document.getElementById('vibration-knob');
+            const track = document.getElementById('vibration-track');
+            const rect = track.getBoundingClientRect();
+            
+            let clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            let newTop = knobStartTop + (clientY - dragStartY);
+            
+            // Clamp
+            const minTop = 20;
+            const maxTop = rect.height - knob.offsetHeight - 20;
+            newTop = Math.max(minTop, Math.min(newTop, maxTop));
+            
+            knob.style.top = newTop + 'px';
+            
+            // Calculate intensity (0 at bottom, 100 at top)
+            const percentFromTop = (newTop - minTop) / (maxTop - minTop);
+            currentIntensity = Math.round(100 * (1 - percentFromTop));
+            
+            // Update display
+            document.getElementById('controller-intensity-big').textContent = currentIntensity;
+            
+            // Update knob vibration effect
+            updateKnobVibration();
+            
+            // Broadcast new intensity
+            if (broadcastChannel && currentSession) {
+                broadcastChannel.postMessage({
+                    type: 'intensity-update',
+                    sessionId: currentSession.id,
+                    intensity: currentIntensity
+                });
+            }
+            
+            // Update waveform immediately
+            if (currentSession) {
+                currentSession.pattern.intensity = currentIntensity;
+            }
+            
+            e.preventDefault();
+        }
+        
+        function endDrag() {
+            isDragging = false;
+            document.removeEventListener('mousemove', onDragMove);
+            document.removeEventListener('mouseup', endDrag);
+            document.removeEventListener('touchmove', onDragMove);
+            document.removeEventListener('touchend', endDrag);
+        }
+        
+        function updateKnobPosition() {
+            const knob = document.getElementById('vibration-knob');
+            const track = document.getElementById('vibration-track');
+            if (!knob || !track) return;
+            
+            const rect = track.getBoundingClientRect();
+            const minTop = 20;
+            const maxTop = rect.height - knob.offsetHeight - 20;
+            
+            const percentFromTop = 1 - (currentIntensity / 100);
+            const newTop = minTop + (maxTop - minTop) * percentFromTop;
+            
+            knob.style.top = newTop + 'px';
+            
+            document.getElementById('controller-intensity-big').textContent = currentIntensity;
+            updateKnobVibration();
+        }
+        
+        function updateKnobVibration() {
+            const knob = document.getElementById('vibration-knob');
+            const ring = document.getElementById('knob-pulse-ring');
+            
+            if (!knob) return;
+            
+            // Remove old class
+            knob.classList.remove('vibrating');
+            
+            if (currentIntensity > 25) {
+                knob.classList.add('vibrating');
+                
+                // Dynamic shadow intensity
+                const intensityFactor = currentIntensity / 100;
+                knob.style.boxShadow = `0 0 ${35 + intensityFactor * 40}px #fda4af, 
+                                        0 0 ${60 + intensityFactor * 70}px #e11d48,
+                                        0 10px 25px rgb(225 29 72 / 0.5)`;
+                
+                // Pulse ring animation speed
+                if (ring) {
+                    ring.style.animation = `knob-vibrate ${Math.max(0.06, 0.12 - intensityFactor * 0.06)}s infinite linear`;
+                    ring.style.borderColor = `rgba(255,255,255,${0.3 + intensityFactor * 0.5})`;
+                }
+            } else {
+                knob.style.boxShadow = `0 0 35px #fda4af, 0 10px 25px rgb(225 29 72 / 0.5), inset 0 8px 15px rgba(255,255,255,0.9), inset 0 -8px 20px rgba(225, 29, 72, 0.6)`;
+                if (ring) ring.style.animation = '';
+            }
+        }
+        
+        // ========== PATTERN ==========
+        function setPattern(pattern) {
+            currentPattern = pattern;
+            
+            // Update active button
+            document.querySelectorAll('.pattern-btn').forEach(b => b.classList.remove('!bg-violet-600', 'border-violet-500'));
+            const btn = document.getElementById(`pattern-${pattern}-c`);
+            if (btn) btn.classList.add('!bg-violet-600', 'border-violet-500');
+            
+            if (currentSession) {
+                currentSession.pattern.type = pattern;
+            }
+            
+            // Broadcast
+            if (broadcastChannel && currentSession && currentRole === 'controller') {
+                broadcastChannel.postMessage({
+                    type: 'pattern-update',
+                    sessionId: currentSession.id,
+                    pattern: pattern
+                });
+            }
+        }
+        
+        // ========== WAVEFORM ANIMATION ==========
+        function startWaveformAnimation(mode) {
+            const canvasId = mode === 'controller' ? 'controller-canvas' : 'receiver-canvas';
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            let time = 0;
+            
+            if (animationFrame) cancelAnimationFrame(animationFrame);
+            
+            function draw() {
+                if (!currentSession) {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    return;
+                }
+                
+                const pattern = currentSession.pattern || { type: 'wave', intensity: currentIntensity, speed: 5 };
+                const intensity = pattern.intensity || currentIntensity;
+                const width = canvas.width;
+                const height = canvas.height;
+                
+                ctx.clearRect(0, 0, width, height);
+                ctx.fillStyle = '#18181b';
+                ctx.fillRect(0, 0, width, height);
+                
+                // Grid
+                ctx.strokeStyle = '#27272a';
+                ctx.lineWidth = 1;
+                for (let x = 0; x < width; x += 35) {
+                    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke();
+                }
+                for (let y = 0; y < height; y += 28) {
+                    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke();
+                }
+                
+                const centerY = height / 2;
+                const maxAmp = height * 0.42;
+                const amp = (intensity / 100) * maxAmp;
+                const freq = (pattern.speed || 5) * 0.75;
+                
+                ctx.strokeStyle = (mode === 'controller') ? '#a855f7' : '#fda4af';
+                ctx.lineWidth = 3.5;
+                ctx.shadowColor = (mode === 'controller') ? '#a855f7' : '#fda4af';
+                ctx.shadowBlur = 14;
+                
+                ctx.beginPath();
+                
+                if (pattern.type === 'wave') {
+                    for (let x = 0; x < width; x += 1.8) {
+                        const y = centerY + Math.sin((x / width) * Math.PI * 2 * freq + time * 0.032) * amp;
+                        x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+                    }
+                } else if (pattern.type === 'pulse') {
+                    const pw = Math.max(7, 38 / freq);
+                    for (let x = 0; x < width; x += pw * 1.7) {
+                        const ph = ((x / width) * Math.PI * 2 * freq + time * 0.055) % (Math.PI * 2);
+                        const pa = Math.sin(ph) > 0.55 ? amp : amp * 0.12;
+                        ctx.moveTo(x, centerY);
+                        ctx.lineTo(x, centerY - pa);
+                        ctx.lineTo(x + pw * 0.55, centerY - pa);
+                        ctx.lineTo(x + pw * 0.55, centerY);
+                    }
+                } else if (pattern.type === 'constant') {
+                    for (let x = 0; x < width; x += 1.8) {
+                        const r = Math.sin(time * 0.035 + x * 0.025) * (amp * 0.18);
+                        const y = centerY + r;
+                        x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+                    }
+                } else if (pattern.type === 'tease') {
+                    const tf = freq * 0.55;
+                    for (let x = 0; x < width; x += 1.8) {
+                        const env = Math.sin((x / width) * Math.PI) * 0.65 + 0.35;
+                        const y = centerY + Math.sin((x / width) * Math.PI * 2 * tf + time * 0.022) * amp * env;
+                        x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+                    }
+                } else if (pattern.type === 'random') {
+                    for (let x = 0; x < width; x += 1.8) {
+                        const n = (Math.random() - 0.5) * amp * 0.35;
+                        const y = centerY + Math.sin((x / width) * Math.PI * 2 * freq + time * 0.028) * amp + n;
+                        x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+                    }
+                }
+                
+                ctx.stroke();
+                ctx.shadowBlur = 0;
+                
+                // Intensity bar
+                ctx.fillStyle = '#27272a';
+                ctx.fillRect(12, 12, 95, 7);
+                ctx.fillStyle = (mode === 'controller') ? '#a855f7' : '#fda4af';
+                ctx.fillRect(12, 12, (intensity / 100) * 95, 7);
+                
+                time += 1;
+                animationFrame = requestAnimationFrame(draw);
+            }
+            
+            draw();
+        }
+        
+        function endEverything() {
+            if (animationFrame) {
+                cancelAnimationFrame(animationFrame);
+                animationFrame = null;
+            }
+            
+            currentSession = null;
+            localStorage.removeItem('lovenseReceiverSession');
+            
+            // Reset all UIs
+            document.getElementById('receiver-link-section').classList.add('hidden');
+            document.getElementById('create-session-btn').classList.remove('hidden');
+            document.getElementById('receiver-status-badge').innerHTML = `
+                <i class="fa-solid fa-wifi"></i> <span>جاهز للإنشاء</span>
+            `;
+            document.getElementById('receiver-status-badge').className = 'px-5 py-2 bg-emerald-900/30 text-emerald-400 text-sm font-medium rounded-2xl flex items-center gap-x-2 border border-emerald-800';
+            
+            document.getElementById('controller-status-badge').innerHTML = `
+                <i class="fa-solid fa-plug"></i> <span>غير متصل</span>
+            `;
+            document.getElementById('controller-status-badge').className = 'px-5 py-2 bg-zinc-800 text-zinc-400 text-sm font-medium rounded-2xl flex items-center gap-x-2 border border-zinc-700';
+            
+            // Clear canvases
+            const rc = document.getElementById('receiver-canvas');
+            const cc = document.getElementById('controller-canvas');
+            if (rc) rc.getContext('2d').clearRect(0,0,rc.width,rc.height);
+            if (cc) cc.getContext('2d').clearRect(0,0,cc.width,cc.height);
+            
+            // Reset knob
+            const knob = document.getElementById('vibration-knob');
+            if (knob) {
+                knob.style.top = '70%';
+                knob.classList.remove('vibrating');
+            }
+            
+            document.getElementById('controller-intensity-big').textContent = '0';
+            document.getElementById('receiver-intensity-live').textContent = '0';
+        }
+        
+        // Keyboard support
+        function initKeyboard() {
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && currentSession) {
+                    if (confirm('إنهاء الجلسة؟')) endEverything();
+                }
+                
+                if (currentRole === 'controller' && currentSession) {
+                    if (e.key === 'ArrowUp') {
+                        currentIntensity = Math.min(100, currentIntensity + 8);
+                        updateKnobPosition();
+                        broadcastIntensity();
+                    }
+                    if (e.key === 'ArrowDown') {
+                        currentIntensity = Math.max(0, currentIntensity - 8);
+                        updateKnobPosition();
+                        broadcastIntensity();
+                    }
+                }
+            });
+        }
+        
+        function broadcastIntensity() {
+            if (broadcastChannel && currentSession) {
+                broadcastChannel.postMessage({
+                    type: 'intensity-update',
+                    sessionId: currentSession.id,
+                    intensity: currentIntensity
+                });
+            }
+        }
+        
+        // Main init
+        function initialize() {
+            initTailwind();
+            initBroadcast();
+            initKeyboard();
+            
+            // Check if we came with a role param
+            const params = new URLSearchParams(window.location.search);
+            const roleParam = params.get('role');
+            const sessionParam = params.get('session');
+            
+            if (roleParam === 'receiver') {
+                document.getElementById('landing-screen').classList.add('hidden');
+                document.getElementById('receiver-ui').classList.remove('hidden');
+                currentRole = 'receiver';
+                initReceiverUI();
+            } 
+            else if (roleParam === 'controller') {
+                document.getElementById('landing-screen').classList.add('hidden');
+                document.getElementById('controller-ui').classList.remove('hidden');
+                currentRole = 'controller';
+                initControllerUI();
+                
+                if (sessionParam) {
+                    currentSession = {
+                        id: sessionParam,
+                        endTime: Date.now() + 600000,
+                        pattern: { type: 'wave', intensity: 0, speed: 5 }
+                    };
+                    setTimeout(connectControllerToSession, 400);
+                }
+            } 
+            else {
+                // Show landing by default
+                document.getElementById('landing-screen').classList.remove('hidden');
+            }
+            
+            // Restore receiver session if exists
+            const saved = localStorage.getItem('lovenseReceiverSession');
+            if (saved && roleParam !== 'controller') {
+                try {
+                    const s = JSON.parse(saved);
+                    if (s.endTime > Date.now()) {
+                        currentSession = s;
+                        if (currentRole === 'receiver') {
+                            document.getElementById('receiver-share-link').value = 
+                                `${window.location.href.split('?')[0]}?role=controller&session=${s.id}`;
+                            document.getElementById('receiver-link-section').classList.remove('hidden');
+                            document.getElementById('create-session-btn').classList.add('hidden');
+                            document.getElementById('receiver-status-badge').innerHTML = `
+                                <i class="fa-solid fa-broadcast-tower"></i> <span>جلسة مستعادة</span>
+                            `;
+                            startReceiverCountdown();
+                            startWaveformAnimation('receiver');
+                        }
+                    }
+                } catch(e){}
+            }
+            
+            console.log('%c[Lovense Separate Pages] الصفحتان المنفصلتان جاهزتان مع الدائرة الحرة للتحكم', 'color:#64748b');
+        }
+        
+        window.onload = initialize;
+        
+        // Debug helpers
+        window.LovenseDebug = {
+            end: () => endEverything(),
+            forceIntensity: (val) => {
+                currentIntensity = val;
+                const k = document.getElementById('vibration-knob');
+                if (k) updateKnobPosition();
+            }
+        };
+    </script>
+</body>
+</html>
